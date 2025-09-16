@@ -22,7 +22,7 @@ export type State = {
 }
 
 export async function initState(): Promise<State> {
-  const pokeapi = new PokeAPI(800)
+  const pokeapi = new PokeAPI(500)
   const locations = await pokeapi.fetchLocations()
   const nextLocationURL = locations.next
   const prevLocationURL = locations.previous

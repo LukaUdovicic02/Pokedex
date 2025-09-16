@@ -17,7 +17,7 @@ export class Cache {
         this.cache.set(key, { createdAt: Date.now(), val })
     }
 
-    get<T>(key: string):T | undefined {
+    get<T>(key: string): T | undefined {
         const entry = this.cache.get(key);
         return entry?.val as T | undefined;
     }
@@ -38,9 +38,10 @@ export class Cache {
     }
 
     stopReapLoop() {
-        if(this.reapIntervalId)
+        if (this.reapIntervalId) {
             clearInterval(this.reapIntervalId)
-        this.reapIntervalId = undefined
+            this.reapIntervalId = undefined
+        }
     }
 
 
