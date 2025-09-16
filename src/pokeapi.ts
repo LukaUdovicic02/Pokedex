@@ -27,7 +27,7 @@ export class PokeAPI {
   }
 
   async fetchLocation(locationName: string): Promise<Location> {
-    const fullUrl = `${PokeAPI.baseURL}/${locationName}`
+    const fullUrl = `${PokeAPI.baseURL}/location-area/${locationName}`
 
     const cached = this.cache.get<Location>(fullUrl);
     if (cached) return cached;
@@ -36,6 +36,19 @@ export class PokeAPI {
     const locations = await response.json() as Location
     this.cache.add(fullUrl, locations)
     return locations
+  }
+
+  async fetchPokemon(pokemonName: string): Promise<Pokemon> {
+    const url = `${PokeAPI.baseURL}/pokemon/${pokemonName}`
+
+    const cached = this.cache.get<Pokemon>(url)
+    if(cached) return cached
+
+    const response = await fetch(url)
+    const pokemon = await response.json() as Pokemon
+    this.cache.add(url, pokemon)
+
+    return pokemon
   }
 }
 
@@ -103,3 +116,8 @@ export type Location = {
     }[];
   }[];
 };
+
+export type Pokemon = {
+  name:string,
+  base_experience: number,
+}

@@ -3,13 +3,15 @@ import { createInterface, type Interface } from "readline";
 import { commandExit } from "./command_exit.js";
 import { commandHelp } from "./command_help.js";
 import { commandMap } from "./command_map.js";
-import { Location, PokeAPI, ShallowLocations } from "./pokeapi.js";
+import { Location, PokeAPI, Pokemon, ShallowLocations } from "./pokeapi.js";
 import { commandMapB } from "./command_mapb.js";
+import { commandExplore } from "./command_explore.js";
+import { commandCatch } from "./command_catch.js";
 
 export type CLICommand = {
   name: string;
   description: string;
-  callback: (state: State) => Promise<void>;
+  callback: (state: State, ...args:string[]) => Promise<void>;
 };
 
 export type State = {
@@ -19,13 +21,16 @@ export type State = {
   nextLocationURL: string | null
   prevLocationURL: string | null
   pokeapi: PokeAPI
+  pokedex: Record<string, Pokemon>
 }
 
-export async function initState(): Promise<State> {
-  const pokeapi = new PokeAPI(500)
+export async function initState(intervalMs: number): Promise<State> {
+
+  const pokeapi = new PokeAPI(intervalMs)
   const locations = await pokeapi.fetchLocations()
   const nextLocationURL = locations.next
   const prevLocationURL = locations.previous
+  let pokedex = {}
 
   const readline = createInterface({
     input: stdin,
@@ -53,6 +58,16 @@ export async function initState(): Promise<State> {
       name: "mapb",
       description: "Displays next 20 location areas",
       callback: commandMapB
+    },
+    explore: {
+      name: "explore",
+      description: "Exploring the pokemons in location area",
+      callback: commandExplore
+    },
+    catch: {
+      name:"catch",
+      description: "catching a pokemon",
+      callback: commandCatch
     }
   }
 
@@ -62,6 +77,7 @@ export async function initState(): Promise<State> {
     locations,
     nextLocationURL,
     prevLocationURL,
-    pokeapi
+    pokeapi,
+    pokedex
   }
 }

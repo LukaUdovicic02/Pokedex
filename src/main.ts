@@ -3,7 +3,7 @@ import { startREPL } from "./repl.js"
 import { initState } from "./state.js";
 
 async function main() {
-  startREPL(await initState());
+  startREPL(await initState(500));
 }
 
 main()

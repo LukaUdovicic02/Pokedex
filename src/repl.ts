@@ -16,14 +16,14 @@ export async function startREPL(state: State) {
             return state.readline.prompt();
         }
         const commands = state.commands;
-        const cmd = input[0];
+        const [cmd, ...args] = input;
         const found = commands[cmd];
         if (!found) {
             console.log(`Unknown command: "${cmd}". Type "help" for a list of commands.`);
             return state.readline.prompt();
         }
         
-        await found.callback(state);
+        await found.callback(state, ...args);
         state.readline.prompt();
     })
 
