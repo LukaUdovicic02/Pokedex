@@ -13,31 +13,31 @@ export type CLICommand = {
 };
 
 export type State = {
-    readline: Interface
-    commands: Record<string, CLICommand>
-    locations: ShallowLocations
-    nextLocationURL: string | null
-    prevLocationURL: string | null
-    pokeapi: PokeAPI
+  readline: Interface
+  commands: Record<string, CLICommand>
+  locations: ShallowLocations
+  nextLocationURL: string | null
+  prevLocationURL: string | null
+  pokeapi: PokeAPI
 }
 
 export async function initState(): Promise<State> {
-    const pokeapi = new PokeAPI()
-    const locations = await pokeapi.fetchLocations()
-    const nextLocationURL = locations.next
-    const prevLocationURL = locations.previous
-  
-    const readline = createInterface({
-        input: stdin,
-        output: stdout,
-        prompt: "Pokedex > ",
-    });
+  const pokeapi = new PokeAPI(800)
+  const locations = await pokeapi.fetchLocations()
+  const nextLocationURL = locations.next
+  const prevLocationURL = locations.previous
+
+  const readline = createInterface({
+    input: stdin,
+    output: stdout,
+    prompt: "Pokedex > ",
+  });
 
   const commands: Record<string, CLICommand> = {
     help: {
-        name:"help",
-        description:"Displays a help message",
-        callback: commandHelp,
+      name: "help",
+      description: "Displays a help message",
+      callback: commandHelp,
     },
     exit: {
       name: "exit",
@@ -45,16 +45,23 @@ export async function initState(): Promise<State> {
       callback: commandExit,
     },
     map: {
-      name:"map",
-      description:"Displays 20 location areas",
+      name: "map",
+      description: "Displays 20 location areas",
       callback: commandMap
     },
     mapb: {
-      name:"mapb",
-      description:"Displays next 20 location areas",
+      name: "mapb",
+      description: "Displays next 20 location areas",
       callback: commandMapB
     }
-   }
-   
-   return {readline,commands, locations,nextLocationURL, prevLocationURL, pokeapi}
+  }
+
+  return {
+    readline,
+    commands,
+    locations,
+    nextLocationURL,
+    prevLocationURL,
+    pokeapi
+  }
 }
