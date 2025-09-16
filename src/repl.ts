@@ -1,35 +1,32 @@
-import { stdin, stdout } from "process";
-import { createInterface } from "readline";
-import { getCommands } from "./commands/command.js";
+import { State } from "./state.js";
 
-export function cleanInput(input:string): string[] {   
+export function cleanInput(input: string): string[] {
     return input
-    .toLowerCase()
-    .trim()
-    .split(" ")
-    .filter((word) => word !== "");
+        .toLowerCase()
+        .trim()
+        .split(" ")
+        .filter((word) => word !== "");
 }
 
-const rl = createInterface({
-  input: stdin,
-  output: stdout,
-  prompt: "Pokedex > ",
-});
-
-export function startREPL() {
-    rl.prompt()  
-    rl.on("line", (line) => {
+export async function startREPL(state: State) {
+    state.readline.prompt()
+    state.readline.on("line", (line) => {
         let input = cleanInput(line);
-        const commands = getCommands()
-        const cmd = input[0]
-        const found = commands[cmd]
-        if(!found) {
-            console.log(`Unknown command: "${cmd}". Type "help" for a list of commands.`,);
-            return rl.prompt()
+        if (input.length === 0) {
+            return state.readline.prompt();
         }
-        found.callback(commands)
+        const commands = state.commands;
+        const cmd = input[0];
+        const found = commands[cmd];
+        if (!found) {
+            console.log(`Unknown command: "${cmd}". Type "help" for a list of commands.`);
+            return state.readline.prompt();
+        }
+        
+        found.callback(state);
+        state.readline.prompt();
     })
-    
+
 }
 
 
