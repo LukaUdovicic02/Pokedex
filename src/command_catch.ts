@@ -1,9 +1,8 @@
-import { Pokemon } from "./pokeapi.js";
 import { State } from "./state.js";
 
 export async function commandCatch(state: State, ...args: string[]) {
     if (args.length === 0) {
-        console.log("Usage: catch <area_name>")
+        console.log("Usage: catch <pokemon_name>")
         return
     }
 
@@ -12,18 +11,12 @@ export async function commandCatch(state: State, ...args: string[]) {
     const pokemon = await state.pokeapi.fetchPokemon(pokemonName)
     const isCatched = calculateChange(pokemon.base_experience)
     if (isCatched) {
-        state.pokedex = {
-            pokemon: {
-                name: pokemon.name,
-                base_experience: pokemon.base_experience
-            }
-        }
+        state.pokedex[pokemon.name] = pokemon
+
         return console.log(`${pokemon.name} was caught!`)
     }
     return console.log(`${pokemon.name} escaped`)
 }
-
-
 
 function calculateChange(exp: number) {
     const maxExp = 1000

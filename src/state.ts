@@ -7,6 +7,7 @@ import { Location, PokeAPI, Pokemon, ShallowLocations } from "./pokeapi.js";
 import { commandMapB } from "./command_mapb.js";
 import { commandExplore } from "./command_explore.js";
 import { commandCatch } from "./command_catch.js";
+import { commandInspect } from "./command_inspect.js";
 
 export type CLICommand = {
   name: string;
@@ -68,6 +69,11 @@ export async function initState(intervalMs: number): Promise<State> {
       name:"catch",
       description: "catching a pokemon",
       callback: commandCatch
+    },
+    inspect: {
+      name:"inspect",
+      description: "Inspecting caught pokemon",
+      callback: commandInspect
     }
   }
 
